@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Intelligent Email Assistant</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+
+  <body>
+    <!-- ================= HEADER ================= -->
+
+    <header class="top-header">
+      <div class="brand">
+        <div class="brand-icon">✉</div>
+
+        <div>
+          <h1>Intelligent Email Assistant</h1>
+          <p>AI-powered customer email analysis and reply generation</p>
+        </div>
+      </div>
+
+      <div class="ollama-status">
+        <span class="status-dot"></span>
+        Powered by Ollama
+      </div>
+    </header>
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="dashboard">
+      <!-- ================= LEFT COLUMN ================= -->
+
+      <section class="input-card card">
+        <div class="section-header">
+          <div>
+            <h2>✉ Customer Email</h2>
+            <p>Enter the customer's email details</p>
+          </div>
+        </div>
+
+        <!-- Customer Name -->
+
+        <div class="form-group">
+          <label for="customer_name"> Customer Name </label>
+
+          <input
+            type="text"
+            id="customer_name"
+            placeholder="Enter customer name"
+            value="ROHITH V S"
+          />
+        </div>
+
+        <!-- Email Subject -->
+
+        <div class="form-group">
+          <label for="subject"> Email Subject </label>
+
+          <textarea
+            id="subject"
+            class="subject-input"
+            placeholder="Enter the email subject..."
+          ></textarea>
+        </div>
+
+        <!-- Customer Email -->
+
+        <div class="form-group">
+          <label for="email"> Customer Email </label>
+
+          <input type="text" id="email" placeholder="Enter customer email" />
+        </div>
+
+        <!-- Tone -->
+
+        <div class="form-group">
+          <label for="tone"> Reply Tone </label>
+
+          <select id="tone">
+            <option value="Friendly">Friendly</option>
+
+            <option value="Formal">Formal</option>
+
+            <option value="Empathetic">Empathetic</option>
+          </select>
+        </div>
+
+        <!-- Generate Button -->
+
+        <button class="generate-btn" id="generateBtn" onclick="generateReply()">
+          <span id="buttonIcon">✦</span>
+
+          <span id="buttonText"> Generate AI Response </span>
+        </button>
+
+        <!-- Information -->
+
+        <div class="info-box">
+          <span class="info-icon">ⓘ</span>
+
+          <p>
+            The AI will analyze the email, identify the intent, find similar
+            past interactions, and generate a professional reply.
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= RIGHT COLUMN ================= -->
+
+      <div class="results-column">
+        <!-- ================= EMAIL ANALYSIS ================= -->
+
+        <section class="card analysis-card">
+          <div class="section-header">
+            <div>
+              <h2>📊 Email Analysis</h2>
+
+              <p>AI analysis and similar email matching</p>
+            </div>
+
+            <span class="badge ai-badge"> ✦ AI Powered </span>
+          </div>
+
+          <div class="analysis-grid">
+            <!-- Intent -->
+
+            <div class="analysis-box intent-box">
+              <div class="analysis-icon">🏷</div>
+
+              <h3>Detected Intent</h3>
+
+              <p id="intent">Waiting for analysis...</p>
+            </div>
+
+            <!-- Similar Email -->
+
+            <div class="analysis-box similar-box">
+              <div class="analysis-icon">🗄</div>
+
+              <h3>Similar Previous Email</h3>
+
+              <p id="similar_email">Waiting for analysis...</p>
+            </div>
+
+            <!-- Previous Reply -->
+
+            <div class="analysis-box previous-box">
+              <div class="analysis-icon">📄</div>
+
+              <h3>Previous Reply</h3>
+
+              <p id="previous_reply">Waiting for analysis...</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= GENERATED REPLY ================= -->
+
+        <section class="card">
+          <div class="section-header">
+            <div>
+              <h2>🤖 AI Generated Reply</h2>
+
+              <p>Initial AI-generated customer response</p>
+            </div>
+
+            <span class="badge draft-badge"> ✦ Draft </span>
+          </div>
+
+          <div class="content-box generated-box">
+            <div class="content-icon">✎</div>
+
+            <p id="generated_reply">
+              Your AI-generated reply will appear here...
+            </p>
+          </div>
+        </section>
+
+        <!-- ================= TONE IMPROVED ================= -->
+
+        <section class="card">
+          <div class="section-header">
+            <div>
+              <h2>✨ Tone Improved Reply</h2>
+
+              <p>Reply rewritten in the selected tone</p>
+            </div>
+
+            <span class="badge improved-badge"> ✓ Improved </span>
+          </div>
+
+          <div class="content-box improved-box">
+            <div class="content-icon">✎</div>
+
+            <p id="improved_reply">
+              Your tone-improved reply will appear here...
+            </p>
+          </div>
+        </section>
+
+        <!-- ================= SUMMARY ================= -->
+
+        <section class="card">
+          <div class="section-header">
+            <div>
+              <h2>📝 Conversation Summary</h2>
+
+              <p>Concise summary of the email and response</p>
+            </div>
+
+            <span class="badge summary-badge"> ✦ Summary </span>
+          </div>
+
+          <div class="content-box summary-box">
+            <div class="content-icon">📄</div>
+
+            <p id="summary">
+              A concise conversation summary will appear here...
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+      <span> Intelligent Email Assistant </span>
+
+      <span class="footer-divider">|</span>
+
+      <span> Built with Flask & Ollama </span>
+
+      <span class="footer-right"> Make customer support smarter ✦ </span>
+    </footer>
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+      async function generateReply() {
+        const customer_name = document
+          .getElementById("customer_name")
+          .value.trim();
+
+        const subject = document.getElementById("subject").value.trim();
+
+        const email = document.getElementById("email").value.trim();
+
+        const tone = document.getElementById("tone").value;
+
+        if (!customer_name || !subject || !email) {
+          alert("Please fill in all customer email details.");
+
+          return;
+        }
+
+        // Loading state
+
+        const button = document.getElementById("generateBtn");
+
+        const buttonText = document.getElementById("buttonText");
+
+        const buttonIcon = document.getElementById("buttonIcon");
+
+        button.disabled = true;
+
+        buttonText.textContent = "Generating...";
+
+        buttonIcon.textContent = "⟳";
+
+        // Clear previous output
+
+        document.getElementById("intent").textContent = "Analyzing...";
+
+        document.getElementById("similar_email").textContent = "Searching...";
+
+        document.getElementById("previous_reply").textContent = "Searching...";
+
+        document.getElementById("generated_reply").textContent =
+          "Generating AI reply...";
+
+        document.getElementById("improved_reply").textContent =
+          "Improving tone...";
+
+        document.getElementById("summary").textContent = "Creating summary...";
+
+        try {
+          const response = await fetch("/generate", {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify({
+              customer_name: customer_name,
+              subject: subject,
+              email: email,
+              tone: tone,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Server error");
+          }
+
+          document.getElementById("intent").textContent = data.intent;
+
+          document.getElementById("similar_email").textContent =
+            data.similar_email;
+
+          document.getElementById("previous_reply").textContent =
+            data.previous_reply;
+
+          document.getElementById("generated_reply").textContent =
+            data.generated_reply;
+
+          document.getElementById("improved_reply").textContent =
+            data.improved_reply;
+
+          document.getElementById("summary").textContent = data.summary;
+        } catch (error) {
+          console.error(error);
+
+          alert(
+            "Unable to generate response. Please make sure Ollama and Flask are running.",
+          );
+        }
+
+        // Restore button
+
+        button.disabled = false;
+
+        buttonText.textContent = "Generate AI Response";
+
+        buttonIcon.textContent = "✦";
+      }
+    </script>
+  </body>
+</html>
